@@ -1,121 +1,150 @@
 /* --- Global & Base Styles --- */
+:root {
+    --primary-color: #00e0ff; /* Neon Blue */
+    --secondary-color: #ff33ff; /* Neon Pink/Purple */
+    --bg-dark: #1a1a2e; /* Deep Dark Blue */
+    --bg-card: #2c2c4b; /* Darker Blue Card */
+    --font-heading: 'Orbitron', sans-serif;
+    --font-body: 'Roboto', sans-serif;
+    --success-color: #39ff14; /* Neon Green */
+    --warning-color: #ffea00; /* Neon Yellow */
+    --error-color: #ff073a; /* Neon Red */
+}
+
 body {
-    background-color: #121212; /* Dark background */
-    color: #00ff00; /* Neon green text for terminal effect */
-    font-family: 'Roboto Mono', monospace; /* Monospace font for code/terminal look */
+    background-color: var(--bg-dark);
+    color: #fff;
+    font-family: var(--font-body);
     margin: 0;
-    padding: 0;
+    padding: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
 }
 
-.container {
+.app-container {
     width: 90%;
-    max-width: 800px;
-    padding: 20px;
-    background-color: #1f1f1f; /* Slightly lighter background for the container */
-    border-radius: 8px;
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5); /* Neon glow effect */
+    max-width: 700px;
+    background-color: var(--bg-card);
+    border-radius: 12px;
+    box-shadow: 0 0 30px rgba(0, 224, 255, 0.2);
+    padding: 30px;
+    border: 1px solid rgba(0, 224, 255, 0.4);
 }
 
-/* --- Header/Title Styles (Pyfiglet Effect) --- */
+/* --- Header & Glitch Effect --- */
 header {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
 }
 
-.pyfiglet-effect {
+.glitch {
+    font-family: var(--font-heading);
     font-size: 2.5em;
-    color: #ffaa00; /* Amber/Orange color for title */
-    text-shadow: 0 0 5px #ffaa00;
-    margin-bottom: 5px;
+    color: var(--primary-color);
+    text-shadow: 0 0 10px var(--primary-color);
+    position: relative;
 }
 
 header p {
     color: #aaa;
-    font-size: 0.9em;
+    margin-top: 5px;
     font-style: italic;
 }
 
-/* --- Terminal Area Styles --- */
-.terminal-container {
-    background-color: #000000;
-    border: 1px solid #00ff00;
-    padding: 15px;
-    height: 300px;
-    overflow-y: auto;
-    border-radius: 4px;
-    box-shadow: inset 0 0 5px rgba(0, 255, 0, 0.8);
-    white-space: pre-wrap; /* Essential for multi-line output */
-    line-height: 1.4;
+.section-title {
+    font-family: var(--font-heading);
+    color: var(--secondary-color);
+    margin-top: 0;
+    margin-bottom: 25px;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+    padding-bottom: 10px;
+    font-size: 1.5em;
 }
 
-.terminal-log span {
-    display: block; /* Each log message on a new line */
-}
-
-/* --- Progress Bar Styles --- */
-.progress-bar-container {
-    margin-top: 10px;
-    min-height: 20px; /* Reserve space for the bar */
-}
-
-.progress-bar {
+/* --- Startup/Loading Screen --- */
+#startup-screen {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    font-size: 0.9em;
+    justify-content: center;
+    min-height: 250px;
 }
 
-.bar-track {
-    flex-grow: 1;
-    height: 10px;
-    background-color: #333;
-    border-radius: 5px;
-    margin: 0 10px;
-    overflow: hidden;
+.loader-circle {
+    border: 8px solid rgba(255, 255, 255, 0.1);
+    border-top: 8px solid var(--primary-color);
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1.5s linear infinite;
+    box-shadow: 0 0 10px var(--primary-color);
 }
 
-.bar-fill {
-    height: 100%;
-    background-color: #00ff00;
-    transition: width 0.1s linear; /* Smooth animation */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
-/* --- Input & Button Styles --- */
-.input-section {
+.status-message {
     margin-top: 20px;
-    border-top: 1px dashed #333;
-    padding-top: 20px;
+    font-size: 1.1em;
+    color: var(--primary-color);
+    font-family: var(--font-heading);
+    letter-spacing: 1px;
+    opacity: 0;
+    animation: fade-in 0.5s forwards 0.5s;
+}
+
+@keyframes fade-in {
+    to { opacity: 1; }
+}
+
+/* --- Input Cards --- */
+.input-card {
+    background-color: #1a1a3b;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border-left: 5px solid var(--primary-color);
+    transition: all 0.3s;
+}
+
+.input-card.disabled {
+    opacity: 0.5;
+    border-left-color: #555;
+    pointer-events: none;
+}
+
+.input-card label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+    color: var(--secondary-color);
 }
 
 .input-group {
     display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
-.input-group label {
-    flex-basis: 200px;
-    color: #00ccff; /* Blue/Cyan color for labels */
-    font-weight: bold;
+    gap: 10px;
 }
 
 .input-group input {
     flex-grow: 1;
-    padding: 8px;
-    margin-right: 10px;
-    background-color: #000;
-    border: 1px solid #00ff00;
-    color: #00ff00;
-    font-family: 'Roboto Mono', monospace;
+    padding: 10px;
+    background-color: #0a0a1a;
+    border: 1px solid var(--primary-color);
+    color: #fff;
+    border-radius: 4px;
+    font-family: var(--font-body);
 }
 
 .input-group button {
-    padding: 8px 15px;
-    background-color: #ffaa00;
-    color: #121212;
+    padding: 10px 15px;
+    background-color: var(--primary-color);
+    color: var(--bg-dark);
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -123,36 +152,121 @@ header p {
     transition: background-color 0.2s;
 }
 
-.input-group button:hover {
-    background-color: #ffa500;
+.input-group button:hover:not(:disabled) {
+    background-color: #00ffff;
 }
 
-/* --- Hidden Class --- */
-.hidden {
-    display: none !important;
+.input-status {
+    margin-top: 10px;
+    font-size: 0.9em;
+    min-height: 1.2em;
+    color: #aaa;
 }
 
-/* --- Status Colors (Based on Terminal Escape Codes) --- */
-.status-green { color: #00ff00; } /* \033[32m */
-.status-blue { color: #00ccff; } /* \033[34m */
-.status-yellow { color: #ffff00; } /* \033[33m */
-.status-red { color: #ff3333; } /* \033[31m */
-.status-highlight { color: #ffeb3b; font-weight: bold; } /* \033[1;93m */
+/* --- Result Section --- */
+.report-box {
+    padding: 25px;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 1.5em;
+    font-family: var(--font-heading);
+    margin-bottom: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-/* --- Problem Solver Section --- */
-.problem-solver {
-    margin-top: 20px;
+.status-high { background-color: var(--success-color); color: #000; }
+.status-medium { background-color: var(--warning-color); color: #000; }
+.status-low { background-color: var(--error-color); color: #fff; }
+
+.final-stats {
+    display: flex;
+    justify-content: space-around;
+    padding: 15px 0;
+    border-top: 1px dashed rgba(255, 255, 255, 0.2);
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+    margin-bottom: 20px;
+}
+
+.stat-item {
+    text-align: center;
+    font-family: var(--font-heading);
+}
+
+.stat-value {
+    font-size: 1.2em;
+    color: var(--primary-color);
+}
+
+.stat-label {
+    font-size: 0.8em;
+    color: #aaa;
+}
+
+/* --- Problem Solver --- */
+.problem-section {
+    background-color: rgba(255, 0, 50, 0.1);
+    border: 1px solid var(--error-color);
     padding: 15px;
-    border: 1px solid #ff3333;
-    background-color: rgba(255, 51, 51, 0.1);
-    border-radius: 4px;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 20px;
 }
 
-.problem-solver button {
-    background-color: #ff3333;
-    color: white;
-    padding: 8px 15px;
-    margin-right: 10px;
-    border: none;
-    cursor: pointer;
+.problem-output {
+    background-color: #1a1a3b;
+    border: 1px solid var(--secondary-color);
+    padding: 15px;
+    border-radius: 8px;
+    white-space: pre-wrap;
+    font-size: 0.9em;
+    line-height: 1.6;
 }
+
+.problem-output strong {
+    color: var(--error-color);
+}
+
+.problem-output .ok {
+    color: var(--success-color);
+}
+
+/* --- Buttons --- */
+.btn-primary, .btn-secondary, .btn-reset {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: opacity 0.2s, transform 0.2s;
+    margin: 5px;
+}
+
+.btn-primary {
+    background-color: var(--secondary-color);
+    color: var(--bg-dark);
+}
+
+.btn-secondary {
+    background-color: #444;
+    color: #fff;
+}
+
+.btn-reset {
+    background-color: #555;
+    color: #fff;
+    display: block;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.btn-primary:hover, .btn-secondary:hover, .btn-reset:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+/* --- Utility Classes --- */
+.hidden { display: none !important; }
