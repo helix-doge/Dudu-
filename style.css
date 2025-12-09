@@ -1,0 +1,158 @@
+/* --- Global & Base Styles --- */
+body {
+    background-color: #121212; /* Dark background */
+    color: #00ff00; /* Neon green text for terminal effect */
+    font-family: 'Roboto Mono', monospace; /* Monospace font for code/terminal look */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    width: 90%;
+    max-width: 800px;
+    padding: 20px;
+    background-color: #1f1f1f; /* Slightly lighter background for the container */
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5); /* Neon glow effect */
+}
+
+/* --- Header/Title Styles (Pyfiglet Effect) --- */
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.pyfiglet-effect {
+    font-size: 2.5em;
+    color: #ffaa00; /* Amber/Orange color for title */
+    text-shadow: 0 0 5px #ffaa00;
+    margin-bottom: 5px;
+}
+
+header p {
+    color: #aaa;
+    font-size: 0.9em;
+    font-style: italic;
+}
+
+/* --- Terminal Area Styles --- */
+.terminal-container {
+    background-color: #000000;
+    border: 1px solid #00ff00;
+    padding: 15px;
+    height: 300px;
+    overflow-y: auto;
+    border-radius: 4px;
+    box-shadow: inset 0 0 5px rgba(0, 255, 0, 0.8);
+    white-space: pre-wrap; /* Essential for multi-line output */
+    line-height: 1.4;
+}
+
+.terminal-log span {
+    display: block; /* Each log message on a new line */
+}
+
+/* --- Progress Bar Styles --- */
+.progress-bar-container {
+    margin-top: 10px;
+    min-height: 20px; /* Reserve space for the bar */
+}
+
+.progress-bar {
+    display: flex;
+    align-items: center;
+    font-size: 0.9em;
+}
+
+.bar-track {
+    flex-grow: 1;
+    height: 10px;
+    background-color: #333;
+    border-radius: 5px;
+    margin: 0 10px;
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 100%;
+    background-color: #00ff00;
+    transition: width 0.1s linear; /* Smooth animation */
+}
+
+/* --- Input & Button Styles --- */
+.input-section {
+    margin-top: 20px;
+    border-top: 1px dashed #333;
+    padding-top: 20px;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.input-group label {
+    flex-basis: 200px;
+    color: #00ccff; /* Blue/Cyan color for labels */
+    font-weight: bold;
+}
+
+.input-group input {
+    flex-grow: 1;
+    padding: 8px;
+    margin-right: 10px;
+    background-color: #000;
+    border: 1px solid #00ff00;
+    color: #00ff00;
+    font-family: 'Roboto Mono', monospace;
+}
+
+.input-group button {
+    padding: 8px 15px;
+    background-color: #ffaa00;
+    color: #121212;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+.input-group button:hover {
+    background-color: #ffa500;
+}
+
+/* --- Hidden Class --- */
+.hidden {
+    display: none !important;
+}
+
+/* --- Status Colors (Based on Terminal Escape Codes) --- */
+.status-green { color: #00ff00; } /* \033[32m */
+.status-blue { color: #00ccff; } /* \033[34m */
+.status-yellow { color: #ffff00; } /* \033[33m */
+.status-red { color: #ff3333; } /* \033[31m */
+.status-highlight { color: #ffeb3b; font-weight: bold; } /* \033[1;93m */
+
+/* --- Problem Solver Section --- */
+.problem-solver {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #ff3333;
+    background-color: rgba(255, 51, 51, 0.1);
+    border-radius: 4px;
+}
+
+.problem-solver button {
+    background-color: #ff3333;
+    color: white;
+    padding: 8px 15px;
+    margin-right: 10px;
+    border: none;
+    cursor: pointer;
+}
