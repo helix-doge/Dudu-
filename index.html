@@ -3,46 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Durability Analyzer | FiberTech Solutions</title>
+    <title>FiberTech AI Durability Analyzer</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <div class="container">
+    <div class="app-container">
+        
         <header>
-            <h1 class="pyfiglet-effect">FiberTech Analyzer</h1>
+            <h1 class="glitch" data-text="FIBERTECH AI">FIBERTECH AI</h1>
             <p>Nature's fibre, nature's future</p>
         </header>
 
-        <div class="terminal-container">
-            <div id="output-log" class="terminal-log">
-                <span class="welcome-text">WELCOME to FiberTech AI Durability System...</span>
+        <div id="dynamic-content-area">
+            
+            <div id="startup-screen" class="app-stage">
+                <div class="loader-circle"></div>
+                <div id="startup-status" class="status-message">Initializing System...</div>
             </div>
-            <div id="progress-bar-container" class="progress-bar-container">
+
+            <div id="input-screen" class="app-stage hidden">
+                <h2 class="section-title"><i class="fas fa-microchip"></i> Data Acquisition</h2>
+                
+                <div class="input-card" id="thickness-card">
+                    <label for="thickness">1. Enter shell thickness (cm):</label>
+                    <div class="input-group">
+                        <input type="number" id="thickness" min="0" step="0.01" placeholder="e.g., 2.5">
+                        <button onclick="processThickness()"><i class="fas fa-arrow-right"></i> Process</button>
+                    </div>
+                    <div id="thickness-status" class="input-status"></div>
                 </div>
-        </div>
 
-        <div class="input-section" id="input-section">
-            <div class="input-group" id="thickness-input-group">
-                <label for="thickness">Enter thickness of shell (cm):</label>
-                <input type="number" id="thickness" min="0" step="0.01" placeholder="e.g., 2.5">
-                <button onclick="processThickness()">Analyze Thickness</button>
+                <div class="input-card disabled" id="weight-card">
+                    <label for="weight">2. Enter bottle weight (grams):</label>
+                    <div class="input-group">
+                        <input type="number" id="weight" min="0" step="1" placeholder="e.g., 75" disabled>
+                        <button onclick="processWeight()" disabled><i class="fas fa-arrow-right"></i> Analyze</button>
+                    </div>
+                    <div id="weight-status" class="input-status"></div>
+                </div>
             </div>
 
-            <div class="input-group hidden" id="weight-input-group">
-                <label for="weight">Enter weight of bottle (grams):</label>
-                <input type="number" id="weight" min="0" step="1" placeholder="e.g., 75">
-                <button onclick="processWeight()">Analyze Weight</button>
-            </div>
-        </div>
+            <div id="result-screen" class="app-stage hidden">
+                <h2 class="section-title"><i class="fas fa-flask"></i> AI Durability Report</h2>
+                <div class="report-box" id="report-box">
+                    <p>Evaluating...</p>
+                </div>
+                
+                <div id="final-stats" class="final-stats"></div>
+                
+                <div class="problem-section hidden" id="problem-solver">
+                    <h3>Low Durability Detected</h3>
+                    <p>Execute deep-dive analysis to find problematic variables:</p>
+                    <button class="btn-primary" onclick="startProblemAnalysis('yes')"><i class="fas fa-search"></i> Start Diagnostic AI</button>
+                    <button class="btn-secondary" onclick="startProblemAnalysis('no')"><i class="fas fa-stop-circle"></i> Skip</button>
+                </div>
 
-        <div class="problem-solver hidden" id="problem-solver">
-            <p>To Find Problem --</p>
-            <button onclick="startProblemAnalysis('yes')">Start AI to Find Problem</button>
-            <button onclick="startProblemAnalysis('no')">Stop the AI</button>
+                <div id="problem-analysis-output" class="problem-output hidden"></div>
+
+                <button class="btn-reset" onclick="resetApplication()"><i class="fas fa-redo"></i> Start New Analysis</button>
+            </div>
+            
         </div>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>
