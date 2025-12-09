@@ -1,166 +1,99 @@
-// --- Global Configuration ---
-const t = 50; // Delay in milliseconds for small progress bar updates
-const tl = 80; // Delay in milliseconds for large startup progress bar
-
-const log = document.getElementById('output-log');
-const progressBarContainer = document.getElementById('progress-bar-container');
-const thicknessInputGroup = document.getElementById('thickness-input-group');
-const weightInputGroup = document.getElementById('weight-input-group');
-const problemSolver = document.getElementById('problem-solver');
+// --- Global DOM & Config ---
+const t = 100; // General delay in milliseconds for status updates
+const STATUS_MESSAGES = [
+    "Initializing System...", 
+    "Establishing Secure Connection...", 
+    "Loading AI Core Modules...",
+    "Validating AI Checksum...",
+    "System Operational."
+];
 
 let thicknessValue = 0;
 let weightValue = 0;
 let score = 0;
 
-// Utility function to print a message to the terminal log
-function logMessage(message, className = 'status-green') {
-    const p = document.createElement('span');
-    p.innerHTML = message;
-    p.className = className;
-    log.appendChild(p);
-    // Auto-scroll to the bottom
-    log.scrollTop = log.scrollHeight;
-}
+// DOM Elements
+const startupScreen = document.getElementById('startup-screen');
+const startupStatus = document.getElementById('startup-status');
+const inputScreen = document.getElementById('input-screen');
+const thicknessCard = document.getElementById('thickness-card');
+const weightCard = document.getElementById('weight-card');
+const resultScreen = document.getElementById('result-screen');
+const reportBox = document.getElementById('report-box');
+const problemSolver = document.getElementById('problem-solver');
+const problemOutput = document.getElementById('problem-analysis-output');
 
-// Utility function to update the progress bar display
-function updateProgressBar(currentStep, totalSteps, message, barLength = 25) {
-    const percent = ((currentStep / totalSteps) * 100).toFixed(1);
-    const filledLength = Math.floor((barLength * currentStep) / totalSteps);
-    const bar = '█'.repeat(filledLength) + '░'.repeat(barLength - filledLength);
 
-    progressBarContainer.innerHTML = `
-        <div class="progress-bar">
-            <span>${message}</span>
-            <div class="bar-track">
-                <div class="bar-fill" style="width: ${percent}%"></div>
-            </div>
-            <span>${percent}%</span>
-        </div>
-    `;
-}
+// Utility Function to handle delays
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-// Function to clear the progress bar display
-function clearProgressBar() {
-    progressBarContainer.innerHTML = '';
-}
+// --- Core Application Stages ---
 
-// --- Large Startup Progress Bar Function (Async) ---
-async function fakeStartupProgress() {
-    const STATUS_MESSAGES = {
-        0: "Starting up...",
-        20: "Server on...",
-        40: "AI server up...",
-        60: "AI activated...",
-        80: "AI online..."
-    };
-    
-    const TOTAL_STEPS = 100;
-
-    for (let i = 0; i <= TOTAL_STEPS; i++) {
-        const currentStatus = STATUS_MESSAGES[i] || progressBarContainer.querySelector('span')?.textContent || STATUS_MESSAGES[0];
-
-        // Update the bar using the large bar style (# and -)
-        const barLength = 50;
-        const percent = ((i / TOTAL_STEPS) * 100).toFixed(1);
-        const filledLength = Math.floor((barLength * i) / TOTAL_STEPS);
-        const bar = '#'.repeat(filledLength) + '-'.repeat(barLength - filledLength);
-
-        progressBarContainer.innerHTML = `
-            <div class="progress-bar">
-                <span class="status-green">Status: ${currentStatus.padEnd(20, ' ')} |${bar}| ${percent}%</span>
-            </div>
-        `;
-        
-        if (i === 0) logMessage(STATUS_MESSAGES[0], 'status-green');
-        if (STATUS_MESSAGES[i]) logMessage(`Status Update: ${STATUS_MESSAGES[i]}`);
-        
-        await new Promise(resolve => setTimeout(resolve, tl));
+async function fakeStartupSequence() {
+    for (let i = 0; i < STATUS_MESSAGES.length; i++) {
+        startupStatus.textContent = STATUS_MESSAGES[i];
+        await sleep(i < STATUS_MESSAGES.length - 1 ? 800 : 1500); // Longer delay for final step
     }
-
-    clearProgressBar();
-    logMessage("\n✅ AI ready to use!");
-    weightInputGroup.classList.remove('hidden'); // Show first input
+    
+    // Transition to Input Screen
+    startupScreen.classList.add('hidden');
+    inputScreen.classList.remove('hidden');
+    document.getElementById('thickness').focus();
 }
 
-// --- Main Program Execution Flow ---
-
-// 1. Initial Startup
-window.onload = () => {
-    // Hide all inputs initially
-    thicknessInputGroup.classList.remove('hidden'); 
-    weightInputGroup.classList.add('hidden'); 
-    fakeStartupProgress();
-};
-
-
-// 2. Thickness Processing
 async function processThickness() {
     thicknessValue = parseFloat(document.getElementById('thickness').value);
-    if (isNaN(thicknessValue) || thicknessValue < 0) {
-        logMessage("ERROR: Please enter a valid thickness.", 'status-red');
+    
+    if (isNaN(thicknessValue) || thicknessValue <= 0) {
+        document.getElementById('thickness-status').innerHTML = `<span style="color:var(--error-color);"><i class="fas fa-exclamation-triangle"></i> Invalid value. Enter > 0.</span>`;
         return;
     }
 
-    thicknessInputGroup.classList.add('hidden');
-    logMessage(`\nEnter thickness of shell (cm): ${thicknessValue}`);
-    logMessage("\nTHICKNESS CALCULATING...");
-
-    const TOTAL_STEPS = 50;
-    for (let i = 1; i <= TOTAL_STEPS; i++) {
-        updateProgressBar(i, TOTAL_STEPS, "Analyzing Thickness");
-        await new Promise(resolve => setTimeout(resolve, t));
-    }
-
-    clearProgressBar();
-    logMessage("✅ Thickness analysis complete.", 'status-blue');
+    const statusElement = document.getElementById('thickness-status');
+    statusElement.innerHTML = `<span style="color:var(--primary-color);"><i class="fas fa-sync fa-spin"></i> Analyzing Thickness...</span>`;
     
-    weightInputGroup.classList.remove('hidden'); // Show next input
+    // Simulate Processing Delay
+    await sleep(t * 15); 
+    
+    statusElement.innerHTML = `<span style="color:var(--success-color);"><i class="fas fa-check-circle"></i> Thickness: ${thicknessValue} cm. Data acquired.</span>`;
+    
+    // Unlock next stage
+    thicknessCard.classList.add('disabled');
+    weightCard.classList.remove('disabled');
+    document.getElementById('weight').disabled = false;
+    document.querySelector('#weight-card button').disabled = false;
     document.getElementById('weight').focus();
 }
 
-
-// 3. Weight Processing and Scoring
 async function processWeight() {
     weightValue = parseFloat(document.getElementById('weight').value);
-    if (isNaN(weightValue) || weightValue < 0) {
-        logMessage("ERROR: Please enter a valid weight.", 'status-red');
+    
+    if (isNaN(weightValue) || weightValue <= 0) {
+        document.getElementById('weight-status').innerHTML = `<span style="color:var(--error-color);"><i class="fas fa-exclamation-triangle"></i> Invalid value. Enter > 0.</span>`;
         return;
     }
-
-    weightInputGroup.classList.add('hidden');
-    logMessage(`\nEnter weight of bottle (grams): ${weightValue}`);
-    logMessage("\nWEIGHT DATA PROCESSING...");
-
-    const TOTAL_STEPS = 40;
-    for (let i = 1; i <= TOTAL_STEPS; i++) {
-        updateProgressBar(i, TOTAL_STEPS, "Analyzing Weight");
-        await new Promise(resolve => setTimeout(resolve, t));
-    }
-
-    clearProgressBar();
-    logMessage("🎉 Weight data acquisition finished.", 'status-blue');
     
-    // Continue to Final AI Logic
+    const statusElement = document.getElementById('weight-status');
+    statusElement.innerHTML = `<span style="color:var(--primary-color);"><i class="fas fa-sync fa-spin"></i> Analyzing Weight...</span>`;
+    
+    // Simulate Processing Delay
+    await sleep(t * 12);
+    
+    statusElement.innerHTML = `<span style="color:var(--success-color);"><i class="fas fa-check-circle"></i> Weight: ${weightValue} grams. Data acquired.</span>`;
+    
+    // Transition to Results
+    inputScreen.classList.add('hidden');
+    resultScreen.classList.remove('hidden');
+    
     await finalAILogic();
 }
 
+// --- AI Logic and Reporting ---
 
-// 4. Final AI Logic
-async function finalAILogic() {
-    logMessage("\nConnecting to AI Core...");
-
-    const TOTAL_STEPS = 20;
-    for (let i = 1; i <= TOTAL_STEPS; i++) {
-        updateProgressBar(i, TOTAL_STEPS, "Final Sync");
-        await new Promise(resolve => setTimeout(resolve, t));
-    }
-
-    clearProgressBar();
-    logMessage("--- AI DURABILITY ASSESSMENT ---", 'status-highlight');
-    
+function calculateScore() {
     score = 0;
 
-    // Durability scoring logic
+    // Thickness Scoring
     if (thicknessValue < 2) {
         score += 1;
     } else if (thicknessValue >= 2 && thicknessValue <= 3) {
@@ -169,6 +102,7 @@ async function finalAILogic() {
         score += 3;
     }
 
+    // Weight Scoring
     if (weightValue <= 10) {
         score += 1;
     } else if (weightValue >= 11 && weightValue <= 80) {
@@ -176,88 +110,91 @@ async function finalAILogic() {
     } else if (weightValue >= 81) {
         score += 3;
     }
+}
+
+async function finalAILogic() {
+    reportBox.innerHTML = `<span style="color:var(--primary-color);"><i class="fas fa-sync fa-spin"></i> Connecting to AI Core...</span>`;
+    await sleep(t * 10);
     
-    logMessage(`Thickness = ${thicknessValue} cm`);
-    logMessage(`Weight = ${weightValue} grams`);
-
-    // Output result based on score
+    calculateScore();
+    
+    let resultMessage;
+    let resultClass;
+    
     if (score === 6) {
-        logMessage("AI Result: The bottle is **highly durable!** (Max Score)", 'status-green');
+        resultMessage = "AI Result: **HIGHLY DURABLE!** (Max Score)";
+        resultClass = 'status-high';
     } else if (score >= 3 && score <= 5) {
-        logMessage("AI Result: Durability is medium. Needs improvement.", 'status-yellow');
+        resultMessage = "AI Result: **MEDIUM DURABILITY.** Needs review.";
+        resultClass = 'status-medium';
     } else {
-        logMessage("AI Result: **Low durability.** Improve material thickness and/or weight.", 'status-red');
+        resultMessage = "AI Result: **LOW DURABILITY.** Critical improvement needed.";
+        resultClass = 'status-low';
     }
+    
+    reportBox.className = `report-box ${resultClass}`;
+    reportBox.innerHTML = resultMessage;
 
-    // AI Analysis Trigger
+    // Display final stats
+    document.getElementById('final-stats').innerHTML = `
+        <div class="stat-item"><div class="stat-value">${thicknessValue} cm</div><div class="stat-label">Thickness</div></div>
+        <div class="stat-item"><div class="stat-value">${weightValue} g</div><div class="stat-label">Weight</div></div>
+        <div class="stat-item"><div class="stat-value">${score} / 6</div><div class="stat-label">Total Score</div></div>
+    `;
+
+    // Show problem solver if score is low
     if (score < 3) {
         problemSolver.classList.remove('hidden');
-    } else {
-        logMessage("\nAnalysis complete. No further problem solving needed.");
     }
 }
 
+// --- Deep-Dive Problem Analysis ---
 
-// 5. AI Problem-Solving Logic
 async function startProblemAnalysis(option) {
     problemSolver.classList.add('hidden');
     
     if (option !== 'yes') {
-        logMessage("\nAI problem analysis stopped.", 'status-blue');
+        problemOutput.classList.remove('hidden');
+        problemOutput.innerHTML = `<p style="color:var(--secondary-color);"><i class="fas fa-times-circle"></i> Analysis skipped by user.</p>`;
         return;
     }
-
-    logMessage("\n\nAI ANALYZING.....", 'status-yellow');
-
-    // --- Thickness Analysis ---
-    logMessage("\nTHICKNESS CALCULATING...", 'status-yellow');
     
-    const TOTAL_THICKNESS_STEPS = 50;
-    for (let i = 1; i <= TOTAL_THICKNESS_STEPS; i++) {
-        updateProgressBar(i, TOTAL_THICKNESS_STEPS, "Analyzing Thickness");
-        await new Promise(resolve => setTimeout(resolve, t));
-    }
-    clearProgressBar();
-    logMessage("✅ Thickness Analysis Complete ...", 'status-yellow');
+    problemOutput.classList.remove('hidden');
+    problemOutput.innerHTML = `<p style="color:var(--warning-color);"><i class="fas fa-dna"></i> Starting Deep-Dive Diagnostic...</p>`;
+    await sleep(t * 10);
 
+    let output = "--- FINAL DIAGNOSTIC REPORT ---\n";
+
+    // Thickness Check
+    output += "\n[1/2] Analyzing Thickness...\n";
+    await sleep(t * 10);
     if (thicknessValue < 2) {
-        logMessage("\nProblem Found At Thickness -- ", 'status-red');
-        logMessage("Low Thickness - Increase Thickness --", 'status-highlight');
+        output += "   - **PROBLEM:** Low Thickness (T < 2 cm). **ACTION:** Increase Thickness.\n";
     } else {
-        logMessage("\nThickness OK -- No Problem Found At Thickness", 'status-green');
+        output += "   - <span class='ok'>Thickness OK</span>.\n";
     }
-
-    // --- Weight Analysis ---
-    logMessage("\nAI Trying to check problem in Weight... ", 'status-yellow');
-    logMessage("\nWEIGHT DATA PROCESSING...", 'status-blue');
-
-    const TOTAL_WEIGHT_STEPS = 40;
-    for (let i = 1; i <= TOTAL_WEIGHT_STEPS; i++) {
-        updateProgressBar(i, TOTAL_WEIGHT_STEPS, "Analyzing Weight");
-        await new Promise(resolve => setTimeout(resolve, t));
-    }
-    clearProgressBar();
-    logMessage("🎉 Weight data acquisition finished.", 'status-yellow');
-
+    problemOutput.innerHTML = `<pre>${output}</pre>`; // Use pre tag for formatted output
+    
+    // Weight Check
+    output += "\n[2/2] Analyzing Weight...\n";
+    await sleep(t * 10);
     if (weightValue <= 10) {
-        logMessage("\nProblem Found At Weight --", 'status-red');
-        logMessage("Low Weight - Increase Weight -- ", 'status-highlight');
+        output += "   - **PROBLEM:** Low Weight (W <= 10 g). **ACTION:** Increase Weight.\n";
     } else {
-        logMessage("\nWeight OK -- No Problem Found At Weight", 'status-green');
+        output += "   - <span class='ok'>Weight OK</span>.\n";
     }
-
-    // --- Final Output ---
-    logMessage("\n\nFINAL OUTPUT", 'status-highlight');
-
-    if (thicknessValue < 2) {
-        logMessage("LOW THICKNESS - Increase thickness", 'status-red');
-    } else {
-        logMessage("THICKNESS OK", 'status-green');
-    }
-
-    if (weightValue <= 10) {
-        logMessage("LOW WEIGHT - Increase weight", 'status-red');
-    } else {
-        logMessage("WEIGHT OK", 'status-green');
-    }
+    problemOutput.innerHTML = `<pre>${output}</pre>`;
+    output += "\n-- Diagnostic Complete --\n";
+    
+    problemOutput.innerHTML = `<pre>${output}</pre><p style="color:var(--success-color);"><i class="fas fa-check-double"></i> Diagnostic Complete.</p>`;
 }
+
+// --- Reset Function ---
+function resetApplication() {
+    window.location.reload();
+}
+
+// --- Initialization ---
+window.onload = () => {
+    fakeStartupSequence();
+};
